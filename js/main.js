@@ -1,5 +1,7 @@
 (() => {
   let yOffset = 0; // variable to use instead of window.pageYOffset
+  let preScrollHeight = 0; // The sum of the height values of the scroll sections located before the current scroll position (yOffset).
+  let currentScene = 0; // Currently active(visible in front) scene(scroll-section)
 
   const sceneInfo = [
     {
@@ -50,7 +52,23 @@
     }
   }
 
-  function scrollLoop() {}
+  function scrollLoop() {
+    preScrollHeight = 0;
+    for (let i = 0; i < currentScene; i++) {
+      preScrollHeight += sceneInfo[i].scrollHeight;
+    }
+
+    if (yOffset > preScrollHeight + sceneInfo[currentScene].scrollHeight) {
+      currentScene++;
+    }
+
+    if (yOffset < preScrollHeight) {
+      if (currentScene === 0) return; //Avoid being negativenumber due to browser bounce effects (on mobile)
+      currentScene--;
+    }
+
+    console.log(yOffset, currentScene);
+  }
 
   window.addEventListener('resize', setLayout);
   window.addEventListener('scroll', () => {
