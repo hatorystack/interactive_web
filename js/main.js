@@ -11,6 +11,13 @@
       scrollHeight: 0,
       objs: {
         container: document.querySelector('#scroll-section-0'),
+        messageA: document.querySelector('#scroll-section-0 .main-message.a'),
+        messageA: document.querySelector('#scroll-section-0 .main-message.b'),
+        messageA: document.querySelector('#scroll-section-0 .main-message.c'),
+        messageA: document.querySelector('#scroll-section-0 .main-message.d'),
+      },
+      values: {
+        messageA_opacity: [0, 1],
       },
     },
     {
@@ -50,6 +57,34 @@
         i
       ].objs.container.style.height = `${sceneInfo[i].scrollHeight}px`;
     }
+
+    yOffset = window.pageYOffset;
+    let totalScrollHeight = 0;
+    for (let i = 0; i < sceneInfo.length; i++) {
+      totalScrollHeight += sceneInfo[i].scrollHeight;
+      if (totalScrollHeight >= yOffset) {
+        currentScene = i;
+        break;
+      }
+    }
+    document.body.setAttribute('id', `show-scene-${currentScene}`);
+  }
+
+  function playAnimation() {
+    switch (currentScene) {
+      case 0:
+        console.log('0 play');
+        break;
+      case 1:
+        console.log('1 play');
+        break;
+      case 2:
+        console.log('2 play');
+        break;
+      case 3:
+        console.log('3 play');
+        break;
+    }
   }
 
   function scrollLoop() {
@@ -60,21 +95,26 @@
 
     if (yOffset > preScrollHeight + sceneInfo[currentScene].scrollHeight) {
       currentScene++;
+      document.body.setAttribute('id', `show-scene-${currentScene}`);
     }
 
     if (yOffset < preScrollHeight) {
       if (currentScene === 0) return; //Avoid being negativenumber due to browser bounce effects (on mobile)
       currentScene--;
+      document.body.setAttribute('id', `show-scene-${currentScene}`);
     }
+    // console.log(yOffset, currentScene);
 
-    console.log(yOffset, currentScene);
+    playAnimation();
   }
 
-  window.addEventListener('resize', setLayout);
   window.addEventListener('scroll', () => {
     yOffset = window.pageYOffset;
     scrollLoop();
   });
+  // window.addEventListener('DOMContentLoad', setLayout);
+  window.addEventListener('load', setLayout);
+  window.addEventListener('resize', setLayout);
 
   setLayout();
 })();
